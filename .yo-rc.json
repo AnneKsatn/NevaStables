@@ -1,0 +1,38 @@
+{
+  "generator-jhipster": {
+    "promptValues": {
+      "packageName": "com.nevastables"
+    },
+    "jhipsterVersion": "6.9.0",
+    "applicationType": "monolith",
+    "baseName": "NevaStables",
+    "packageName": "com.nevastables",
+    "packageFolder": "com/nevastables",
+    "serverPort": "8080",
+    "authenticationType": "jwt",
+    "cacheProvider": "ehcache",
+    "enableHibernateCache": true,
+    "websocket": false,
+    "databaseType": "sql",
+    "devDatabaseType": "postgresql",
+    "prodDatabaseType": "postgresql",
+    "searchEngine": false,
+    "messageBroker": false,
+    "serviceDiscoveryType": false,
+    "buildTool": "maven",
+    "enableSwaggerCodegen": false,
+    "jwtSecretKey": "OWQ5MTNjZGIwZjdmNjIxNzYxOGVmZDAyNjkwZjA2YTY5Y2EwOGQ0YzEwNDM2ZGMyYjk2MDJhMTNmOTJkZWVlNTE1ZDIyMzQ0YThkZWQzNDU4NDk3ZDY4ZmFjODIyYjRhZmFkZTAzYmM5MjhiMzJmNDJkODMwMTMzYTJlYjJlZDA=",
+    "embeddableLaunchScript": false,
+    "useSass": true,
+    "clientPackageManager": "npm",
+    "skipClient": true,
+    "creationTimestamp": 1591289063808,
+    "testFrameworks": [],
+    "jhiPrefix": "jhi",
+    "entitySuffix": "",
+    "dtoSuffix": "DTO",
+    "otherModules": [],
+    "enableTranslation": false,
+    "blueprints": []
+  }
+}
