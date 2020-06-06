@@ -1,8 +1,10 @@
 package com.nevastables.web.rest;
 
+import com.nevastables.repository.UserRepository;
 import com.nevastables.security.jwt.JWTFilter;
 import com.nevastables.security.jwt.TokenProvider;
 import com.nevastables.web.rest.vm.LoginVM;
+import com.nevastables.domain.User;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -16,6 +18,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.Optional;
 
 /**
  * Controller to authenticate users.
@@ -24,13 +27,17 @@ import javax.validation.Valid;
 @RequestMapping("/api")
 public class UserJWTController {
 
+    private final UserRepository userService;
+
     private final TokenProvider tokenProvider;
 
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
 
-    public UserJWTController(TokenProvider tokenProvider, AuthenticationManagerBuilder authenticationManagerBuilder) {
+    public UserJWTController(TokenProvider tokenProvider, AuthenticationManagerBuilder authenticationManagerBuilder,
+                             UserRepository userService) {
         this.tokenProvider = tokenProvider;
         this.authenticationManagerBuilder = authenticationManagerBuilder;
+        this.userService  = userService;
     }
 
     @PostMapping("/authenticate")
@@ -45,17 +52,43 @@ public class UserJWTController {
         String jwt = tokenProvider.createToken(authentication, rememberMe);
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.add(JWTFilter.AUTHORIZATION_HEADER, "Bearer " + jwt);
-        return new ResponseEntity<>(new JWTToken(jwt), httpHeaders, HttpStatus.OK);
+
+        System.out.println(loginVM.getUsername());
+        Optional<User> u = userService.findOneByLogin(loginVM.getUsername());
+
+        return new ResponseEntity<>(new JWTToken(jwt, u.get().getId()), httpHeaders, HttpStatus.OK);
     }
+
+//    @PostMapping("/authenticate-owner")
+//    public ResponseEntity<JWTToken> authorize(@Valid @RequestBody LoginVMOwner loginVM) {
+//
+//        UsernamePasswordAuthenticationToken authenticationToken =
+//            new UsernamePasswordAuthenticationToken(loginVM.getUsername(), loginVM.getPassword());
+//
+//        System.out.println("loginVM.getUsername()");
+//        System.out.println(loginVM.getUsername());
+//        Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
+//        SecurityContextHolder.getContext().setAuthentication(authentication);
+//        boolean rememberMe = (loginVM.isRememberMe() == null) ? false : loginVM.isRememberMe();
+//        String jwt = tokenProvider.createToken(authentication, rememberMe);
+//        HttpHeaders httpHeaders = new HttpHeaders();
+//        httpHeaders.add(JWTFilter.AUTHORIZATION_HEADER, "Bearer " + jwt);
+//
+//        Optional<OwnerUser> u = userOwnerRepository.findOneByLogin(loginVM.getUsername());
+//
+//        return new ResponseEntity<>(new JWTToken(jwt, u.get().getId()), httpHeaders, HttpStatus.OK);
+//    }
     /**
      * Object to return as body in JWT Authentication.
      */
     static class JWTToken {
 
         private String idToken;
+        private Long idUser;
 
-        JWTToken(String idToken) {
+        JWTToken(String idToken, Long idUser) {
             this.idToken = idToken;
+            this.idUser = idUser;
         }
 
         @JsonProperty("id_token")
@@ -65,6 +98,11 @@ public class UserJWTController {
 
         void setIdToken(String idToken) {
             this.idToken = idToken;
+        }
+
+        @JsonProperty("id_user")
+        Long getIdUser() {
+            return idUser;
         }
     }
 }
