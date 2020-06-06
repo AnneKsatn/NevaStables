@@ -1,5 +1,7 @@
 package com.nevastables.web.rest;
 
+import com.nevastables.domain.UserOwner;
+import com.nevastables.repository.UserOwnerRepository;
 import com.nevastables.repository.UserRepository;
 import com.nevastables.security.jwt.JWTFilter;
 import com.nevastables.security.jwt.TokenProvider;
@@ -28,16 +30,18 @@ import java.util.Optional;
 public class UserJWTController {
 
     private final UserRepository userService;
+    private final UserOwnerRepository userOwnerService;
 
     private final TokenProvider tokenProvider;
 
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
 
     public UserJWTController(TokenProvider tokenProvider, AuthenticationManagerBuilder authenticationManagerBuilder,
-                             UserRepository userService) {
+                             UserRepository userService, UserOwnerRepository userOwnerService) {
         this.tokenProvider = tokenProvider;
         this.authenticationManagerBuilder = authenticationManagerBuilder;
         this.userService  = userService;
+        this.userOwnerService = userOwnerService;
     }
 
     @PostMapping("/authenticate")
@@ -58,6 +62,26 @@ public class UserJWTController {
 
         return new ResponseEntity<>(new JWTToken(jwt, u.get().getId()), httpHeaders, HttpStatus.OK);
     }
+
+    @PostMapping("/authenticate-owner")
+    public ResponseEntity<JWTToken> authorizeOwner(@Valid @RequestBody LoginVM loginVM) {
+
+        UsernamePasswordAuthenticationToken authenticationToken =
+            new UsernamePasswordAuthenticationToken(loginVM.getUsername(), loginVM.getPassword());
+
+        Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+        boolean rememberMe = (loginVM.isRememberMe() == null) ? false : loginVM.isRememberMe();
+        String jwt = tokenProvider.createToken(authentication, rememberMe);
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.add(JWTFilter.AUTHORIZATION_HEADER, "Bearer " + jwt);
+
+        System.out.println(loginVM.getUsername());
+        Optional<UserOwner> u = userOwnerService.findOneByLogin(loginVM.getUsername());
+
+        return new ResponseEntity<>(new JWTToken(jwt, u.get().getId()), httpHeaders, HttpStatus.OK);
+    }
+
 
 //    @PostMapping("/authenticate-owner")
 //    public ResponseEntity<JWTToken> authorize(@Valid @RequestBody LoginVMOwner loginVM) {
