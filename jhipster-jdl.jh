@@ -1,0 +1,53 @@
+entity StableVet {
+	horseId Long required,
+    stableVetInfoId Long required,
+    status VetStatus required
+}
+
+entity StableVetInfo {
+	stableId Long required,
+    date Instant required,
+    title String required,
+    price Long required,
+}
+
+entity Stable {
+	title String required,
+	managerId Long required,
+}
+
+entity Horse {
+	name String required,
+    ownerId Long,
+	gender Gender required,
+	birth Instant,
+	colorId Long,
+}
+
+entity Resident{
+	stableId Long required,
+    horseId Long required,
+	date Instant,
+    categoryId Long,
+    stall Integer
+}
+
+entity StandingCategogy{
+	stableId Long required,
+    price Long,
+	title String
+}
+
+entity CategoryServices{
+	categoryId Long required,
+	title String
+}
+
+enum Gender {
+    MARE, STALLION, GELDING
+}
+
+enum VetStatus {
+    MISSED, PAID, NOTPAID
+}
+
