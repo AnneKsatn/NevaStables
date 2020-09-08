@@ -71,7 +71,7 @@ public class StableVetInfoResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PutMapping("/stable-vet-infos")
-    public ResponseEntity<StableVetInfo> updateStableVetInfo(@Valid @RequestBody StableVetInfo stableVetInfo) throws URISyntaxException {
+    public ResponseEntity<StableVetInfo> updateStableVetInfo(@Valid @RequestBody StableVetInfo stableVetInfo)  {
         log.debug("REST request to update StableVetInfo : {}", stableVetInfo);
         if (stableVetInfo.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
