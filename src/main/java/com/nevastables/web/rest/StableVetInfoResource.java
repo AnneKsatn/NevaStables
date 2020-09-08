@@ -49,6 +49,8 @@ public class StableVetInfoResource {
      */
     @PostMapping("/stable-vet-infos")
     public ResponseEntity<StableVetInfo> createStableVetInfo(@Valid @RequestBody StableVetInfo stableVetInfo) throws URISyntaxException {
+        System.out.println(stableVetInfo);
+
         log.debug("REST request to save StableVetInfo : {}", stableVetInfo);
         if (stableVetInfo.getId() != null) {
             throw new BadRequestAlertException("A new stableVetInfo cannot already have an ID", ENTITY_NAME, "idexists");
