@@ -1,7 +1,10 @@
 package com.nevastables.web.rest;
 
+import com.nevastables.domain.Resident;
+import com.nevastables.domain.StableVet;
 import com.nevastables.domain.StableVetInfo;
-import com.nevastables.repository.StableVetInfoRepository;
+import com.nevastables.domain.enumeration.VetStatus;
+import com.nevastables.repository.*;
 import com.nevastables.web.rest.errors.BadRequestAlertException;
 
 import io.github.jhipster.web.util.HeaderUtil;
@@ -16,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -35,9 +39,15 @@ public class StableVetInfoResource {
     private String applicationName;
 
     private final StableVetInfoRepository stableVetInfoRepository;
+    private final ResidentRepository residentRepository;
+    private final StableVetRepository stableVetRepository;
 
-    public StableVetInfoResource(StableVetInfoRepository stableVetInfoRepository) {
+    public StableVetInfoResource(StableVetInfoRepository stableVetInfoRepository,
+                                 ResidentRepository residentRepository,
+                                 StableVetRepository stableVetRepository) {
         this.stableVetInfoRepository = stableVetInfoRepository;
+        this.residentRepository = residentRepository;
+        this.stableVetRepository = stableVetRepository;
     }
 
     /**
@@ -51,11 +61,29 @@ public class StableVetInfoResource {
     public ResponseEntity<StableVetInfo> createStableVetInfo(@Valid @RequestBody StableVetInfo stableVetInfo) throws URISyntaxException {
         System.out.println(stableVetInfo);
 
+        Long stableId = stableVetInfo.getStableId();
+        List<Resident> residents = this.residentRepository.findAllByStableId(stableId);
+        List<StableVet> record = new ArrayList<StableVet>();
+
         log.debug("REST request to save StableVetInfo : {}", stableVetInfo);
         if (stableVetInfo.getId() != null) {
             throw new BadRequestAlertException("A new stableVetInfo cannot already have an ID", ENTITY_NAME, "idexists");
         }
+
         StableVetInfo result = stableVetInfoRepository.save(stableVetInfo);
+
+        for (Resident resident: residents) {
+            StableVet stableVet = new StableVet();
+
+            stableVet.setHorseId(resident.getHorseId());
+            stableVet.setStatus(VetStatus.NOTPAID);
+            stableVet.setStableVetInfoId(result.getId());
+
+            record.add(stableVet);
+        }
+
+        stableVetRepository.saveAll(record);
+
         return ResponseEntity.created(new URI("/api/stable-vet-infos/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME, result.getId().toString()))
             .body(result);
