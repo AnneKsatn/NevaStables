@@ -1,7 +1,7 @@
 version: '2'
 services:
   nevastables-postgresql:
-    image: postgres:12.1
+    image: postgres:10.13
     # volumes:
     #     - ~/volumes/jhipster/NevaStables/postgresql/:/var/lib/postgresql/data/
     environment:

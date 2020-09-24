@@ -1,6 +1,10 @@
 package com.nevastables.web.rest;
 
+import com.nevastables.domain.Horse;
 import com.nevastables.domain.StableVet;
+import com.nevastables.domain.StableVetInfo;
+import com.nevastables.domain.StableVetToFront;
+import com.nevastables.repository.HorseRepository;
 import com.nevastables.repository.StableVetRepository;
 import com.nevastables.web.rest.errors.BadRequestAlertException;
 
@@ -16,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -35,9 +40,11 @@ public class StableVetResource {
     private String applicationName;
 
     private final StableVetRepository stableVetRepository;
+    private final HorseRepository horseRepository;
 
-    public StableVetResource(StableVetRepository stableVetRepository) {
+    public StableVetResource(StableVetRepository stableVetRepository, HorseRepository horseRepository) {
         this.stableVetRepository = stableVetRepository;
+        this.horseRepository = horseRepository;
     }
 
     /**
@@ -86,9 +93,25 @@ public class StableVetResource {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of stableVets in body.
      */
     @GetMapping("/stable-vets")
-    public List<StableVet> getAllStableVets() {
-        log.debug("REST request to get all StableVets");
-        return stableVetRepository.findAll();
+    public List<StableVetToFront> getAllStableVets(@RequestParam(value="vet") Long stableVetInfoId) {
+
+        List<StableVet> rows = stableVetRepository.findAllByStableVetInfoId(stableVetInfoId);
+        List<StableVetToFront> result = new ArrayList<StableVetToFront>();
+
+        for(StableVet row: rows) {
+            Optional<Horse> horse = this.horseRepository.findById(row.getHorseId());
+            System.out.println(horse);
+
+            result.add(
+                new StableVetToFront(
+                    horse.get().getName(),
+                    row.getId(),
+                    row.getHorseId(),
+                    row.getStableVetInfoId(),
+                    row.getStatus()));
+        }
+
+        return result;
     }
 
     /**
