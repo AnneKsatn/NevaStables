@@ -123,6 +123,20 @@ public class ResidentResource {
         return residentInfos;
     }
 
+    @GetMapping("/is_residents")
+    public Boolean isResidentd(@RequestParam(value="horseId") Long horseID) {
+        log.debug("REST request to get all Residents by HorseID");
+
+        Boolean result = Boolean.TRUE;
+
+        List<Resident> residents = residentRepository.findAllByHorseId(horseID);
+        if(residents.size() == 0) {
+            result = Boolean.FALSE;
+        }
+
+        return result;
+    }
+
     /**
      * {@code GET  /residents/:id} : get the "id" resident.
      *

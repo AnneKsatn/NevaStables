@@ -14,4 +14,5 @@ import java.util.List;
 @Repository
 public interface ResidentRepository extends JpaRepository<Resident, Long> {
     List<Resident> findAllByStableId(Long stableId);
+    List<Resident> findAllByHorseId(Long horseId);
 }
