@@ -21,6 +21,8 @@
     <include file="config/liquibase/changelog/20200608082417_added_entity_Resident.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20200608145524_added_entity_StandingCategogy.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20200608145624_added_entity_CategogyServices.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20201017103515_added_entity_UserVet.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20201017103615_added_entity_UserVetInfo.xml" relativeToChangelogFile="false"/>
     <!-- jhipster-needle-liquibase-add-changelog - JHipster will add liquibase changelogs here -->
     <!-- jhipster-needle-liquibase-add-constraints-changelog - JHipster will add liquibase constraints changelogs here -->
     <!-- jhipster-needle-liquibase-add-incremental-changelog - JHipster will add incremental liquibase changelogs here -->
