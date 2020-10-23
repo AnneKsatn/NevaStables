@@ -1,7 +1,9 @@
 package com.nevastables.web.rest;
 
 import com.nevastables.domain.CustomVet;
+import com.nevastables.domain.CustomVetToFront;
 import com.nevastables.repository.CustomVetRepository;
+import com.nevastables.repository.HorseRepository;
 import com.nevastables.web.rest.errors.BadRequestAlertException;
 
 import io.github.jhipster.web.util.HeaderUtil;
@@ -16,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -35,9 +38,12 @@ public class CustomVetResource {
     private String applicationName;
 
     private final CustomVetRepository customVetRepository;
+    private final HorseRepository horseRepository;
 
-    public CustomVetResource(CustomVetRepository customVetRepository) {
+    public CustomVetResource(CustomVetRepository customVetRepository,
+                             HorseRepository horseRepository) {
         this.customVetRepository = customVetRepository;
+        this.horseRepository = horseRepository;
     }
 
     /**
@@ -86,9 +92,27 @@ public class CustomVetResource {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of customVets in body.
      */
     @GetMapping("/custom-vets")
-    public List<CustomVet> getAllCustomVets() {
+    public List<CustomVetToFront> getAllCustomVets() {
         log.debug("REST request to get all CustomVets");
-        return customVetRepository.findAll();
+        List<CustomVet> list = customVetRepository.findAll();
+        List<CustomVetToFront> result = new ArrayList<>();
+
+        for(CustomVet vet: list) {
+            CustomVetToFront customVet = new CustomVetToFront();
+
+            customVet.setTitle(vet.getTitle());
+            customVet.setPrice(vet.getPrice());
+            customVet.setDoctor(vet.getDoctor());
+            customVet.setDate(vet.getDate());
+            customVet.setHorseName(this.horseRepository.findById(vet.getHorseId()).get().getName());
+            customVet.setStatus(vet.getStatus());
+            customVet.setId(vet.getId());
+            customVet.setNote(vet.getNote());
+            customVet.setHorseId(vet.getHorseId());
+
+            result.add(customVet);
+        }
+        return result;
     }
 
     /**

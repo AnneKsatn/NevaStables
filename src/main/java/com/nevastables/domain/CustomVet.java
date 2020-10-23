@@ -24,33 +24,33 @@ public class CustomVet implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sequenceGenerator")
     @SequenceGenerator(name = "sequenceGenerator")
-    private Long id;
+    public Long id;
 
     @NotNull
     @Column(name = "horse_id", nullable = false)
-    private Long horseId;
+    public Long horseId;
 
     @NotNull
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)
-    private VetStatus status;
+    public VetStatus status;
 
     @NotNull
     @Column(name = "date", nullable = false)
-    private Instant date;
+    public Instant date;
 
     @NotNull
     @Column(name = "title", nullable = false)
-    private String title;
+    public String title;
 
     @Column(name = "price")
-    private Long price;
+    public Long price;
 
     @Column(name = "doctor")
-    private String doctor;
+    public String doctor;
 
     @Column(name = "note")
-    private String note;
+    public String note;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here
     public Long getId() {
