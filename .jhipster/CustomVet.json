@@ -1,0 +1,58 @@
+{
+  "name": "CustomVet",
+  "fields": [
+    {
+      "fieldName": "horseId",
+      "fieldType": "Long",
+      "fieldValidateRules": [
+        "required"
+      ]
+    },
+    {
+      "fieldName": "status",
+      "fieldType": "VetStatus",
+      "fieldValues": "MISSED,PAID,NOTPAID",
+      "fieldValidateRules": [
+        "required"
+      ]
+    },
+    {
+      "fieldName": "date",
+      "fieldType": "Instant",
+      "fieldValidateRules": [
+        "required"
+      ]
+    },
+    {
+      "fieldName": "title",
+      "fieldType": "String",
+      "fieldValidateRules": [
+        "required"
+      ]
+    },
+    {
+      "fieldName": "price",
+      "fieldType": "Long"
+    },
+    {
+      "fieldName": "doctor",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "note",
+      "fieldType": "String"
+    }
+  ],
+  "relationships": [],
+  "changelogDate": "20201023090756",
+  "entityTableName": "custom_vet",
+  "dto": "no",
+  "pagination": "no",
+  "service": "no",
+  "jpaMetamodelFiltering": false,
+  "fluentMethods": true,
+  "readOnly": false,
+  "embedded": false,
+  "clientRootFolder": "",
+  "applications": "*"
+}
