@@ -16,6 +16,4 @@ import java.util.List;
 public interface StableVetRepository extends JpaRepository<StableVet, Long> {
 
     List<StableVet> findAllByStableVetInfoId(Long stableVetInfoId);
-
-    List<StableVet> findAllByHorseId(Long stableVetInfoId);
 }

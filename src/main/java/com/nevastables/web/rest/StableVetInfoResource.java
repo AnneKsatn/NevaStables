@@ -1,6 +1,8 @@
 package com.nevastables.web.rest;
 
-import com.nevastables.domain.*;
+import com.nevastables.domain.Resident;
+import com.nevastables.domain.StableVet;
+import com.nevastables.domain.StableVetInfo;
 import com.nevastables.domain.enumeration.VetStatus;
 import com.nevastables.repository.*;
 import com.nevastables.web.rest.errors.BadRequestAlertException;
@@ -39,20 +41,13 @@ public class StableVetInfoResource {
     private final StableVetInfoRepository stableVetInfoRepository;
     private final ResidentRepository residentRepository;
     private final StableVetRepository stableVetRepository;
-    private final HorseRepository horseRepository;
-    private final StableRepository stableRepository;
 
     public StableVetInfoResource(StableVetInfoRepository stableVetInfoRepository,
                                  ResidentRepository residentRepository,
-                                 StableVetRepository stableVetRepository,
-                                 HorseRepository horseRepository,
-                                 StableRepository stableRepository
-                                 ) {
+                                 StableVetRepository stableVetRepository) {
         this.stableVetInfoRepository = stableVetInfoRepository;
         this.residentRepository = residentRepository;
         this.stableVetRepository = stableVetRepository;
-        this.horseRepository = horseRepository;
-        this.stableRepository = stableRepository;
     }
 
     /**
@@ -124,49 +119,6 @@ public class StableVetInfoResource {
     public List<StableVetInfo> getAllStableVetInfos() {
         log.debug("REST request to get all StableVetInfos");
         return stableVetInfoRepository.findAll();
-    }
-
-
-    @GetMapping("/stable-vet-infos-for-user")
-    public List<StableVetToUser> getAllStableVetInfosByUser() {
-        log.debug("REST request to get all StableVetInfos");
-        int uid = 1;
-
-        List<Horse> horses = this.horseRepository.findAllByOwnerId(Long.valueOf(uid));
-        List<StableVetToUser> vets = new ArrayList<>();
-
-        for(Horse horse: horses) {
-//            System.out.println(horse.toString());
-
-            List<StableVet> horseVets = this.stableVetRepository.findAllByHorseId(horse.getId());
-            for(StableVet horseVet: horseVets) {
-                System.out.println(horseVet.toString());
-
-                Long stableVetInfoId = horseVet.getStableVetInfoId();
-
-                Optional<StableVetInfo> vetInfo = this.stableVetInfoRepository.findById(stableVetInfoId);
-                Optional<Stable> stable = this.stableRepository.findById(vetInfo.get().getStableId());
-//
-                System.out.println(vetInfo.toString());
-                System.out.println(stable.toString());
-                StableVetToUser vet = new StableVetToUser(
-                    vetInfo.get().getDate(),
-                    vetInfo.get().getTitle(),
-                    horseVet.getStatus(),
-                    vetInfo.get().getPrice(),
-                    vetInfo.get().getId(),
-                    vetInfo.get().getStableId(),
-                    stable.get().getTitle(),
-                    horse.getId(),
-                    horseVet.getId(),
-                    horse.getName()
-                    );
-
-                vets.add(vet);
-            }
-        }
-
-        return vets;
     }
 
     /**
