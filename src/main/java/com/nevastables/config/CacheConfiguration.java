@@ -54,8 +54,6 @@ public class CacheConfiguration {
             createCache(cm, com.nevastables.domain.Horse.class.getName());
             createCache(cm, com.nevastables.domain.Resident.class.getName());
             createCache(cm, com.nevastables.domain.StandingCategogy.class.getName());
-            createCache(cm, com.nevastables.domain.UserVet.class.getName());
-            createCache(cm, com.nevastables.domain.UserVetInfo.class.getName());
             // jhipster-needle-ehcache-add-entry
         };
     }
