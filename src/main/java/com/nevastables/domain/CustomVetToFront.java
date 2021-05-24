@@ -17,6 +17,7 @@ import java.time.Instant;
 public class CustomVetToFront extends  CustomVet {
 
     private String horseName;
+    private String hn;
 //
 //    public CustomVetToFront(){
 //        super();
